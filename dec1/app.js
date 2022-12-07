@@ -6,25 +6,53 @@
 
 //! part 1 — find elf carrying the highest number of items
 
-const regex = /\n\n/;
+const regex = /\r\n/;
+const fs = require('fs');
+const { stripVTControlCharacters } = require('util');
+const input = fs.readFileSync('data.txt', 'utf-8');
+const array = input.split(regex);
 
-// import data from './data.json' assert {type: "json"}
+const numArr = array.map((item) => {
+  if (item === '') {
+    item = 0;
+  }
+  return parseInt(item);
+});
 
-// get Data
-export const getData = async (inputFile) => {
-    let rawInputs = await fetch(inputFile)
-    const response = await rawInputs.text()
-        // .then(response => response.text());
-        const dividedList = response.split("\r\n")
-        console.log(dividedList)        
-        return response
-};
+function findLargestSum(data) {
+  let highestCycle = 0;
+  const arr = [];
+  // loop through the data
+  for (let i = 0; i < data.length; i++) {
+    // add to the highest total if data is bigger than 0
+    if (data[i] > 0) {
+      highestCycle += data[i];
+    }
+    // when data is zero push into the array and rest highestCyle to 0
+    if (data[i] === 0) {
+      arr.push(highestCycle);
+      highestCycle = 0;
+    }
+  }
+  // find the max value of the array
+  
+  console.log(Math.max(...arr));
+  return arr
+}
 
-// go through the array and look for the 
+// use a sort method to sort from top to bottom
+const sortedArr = findLargestSum(numArr).sort(function(a,b){return b - a})
 
-getData('data.txt')
+// use a splice to only get the three values and use a reduce to add those numbers together
+const topThreeValues = sortedArr.splice(0,3).reduce((number, currVal) => {
+  return number + currVal
+})
+
+console.log(topThreeValues)
 
 
-// write the code that processes data
 
-// 
+
+
+// findLargestSum(numArr);
+
